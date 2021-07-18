@@ -1,0 +1,32 @@
+require:
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.6
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Layout/LineLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 9
+
+RSpec/ExampleLength:
+  Max: 10
+
+Style/Semicolon:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
