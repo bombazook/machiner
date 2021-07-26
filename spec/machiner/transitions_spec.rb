@@ -113,6 +113,14 @@ RSpec.describe Machiner::Transitions do
           described_class.send(:transition, :test, a: :b) { |i| i[:some] = :hello_world; i }
           expect(machine.call(:test, { some: :test_object })).to be_eql({ some: :hello_world })
         end
+
+        it "allows to pass additional 'params' hash to call method" do
+          described_class.extend Machiner::States
+          described_class.send(:state, :a, ->(c) { c[:some] == :test_object })
+          described_class.send(:transition, :test, a: :b) { |i, name: "hello"| i[:some] = name; i }
+          expect(machine.call(:test, { some: :test_object }, params: { name: "hello_world" })[:some])
+            .to be_eql("hello_world")
+        end
       end
 
       describe "#safe_call" do

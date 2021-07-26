@@ -62,7 +62,7 @@ module Machiner
         transition_container.full_keys.select { |key| transition_key_check(key, *data, **meta) }
       end
 
-      def call(event_name, *data, **meta)
+      def call(event_name, *data, params: {}, **meta)
         raise ArgumentError if data.empty?
 
         transition_keys = transition_container.filtered_keys(event_name, **meta)
@@ -73,10 +73,10 @@ module Machiner
         end
         raise WrongStateError unless transition_key
 
-        call_transition_by_full_key(transition_key, *data)
+        call_transition_by_full_key(transition_key, *data, **params)
       end
 
-      def safe_call(event_name, *data, **meta)
+      def safe_call(event_name, *data, params: {}, **meta)
         transition_keys = transition_container.filtered_keys(event_name, **meta)
         return (data.size == 1 ? data[0] : data) if transition_keys.empty?
 
@@ -85,17 +85,17 @@ module Machiner
         end
         return (data.size == 1 ? data[0] : data) unless transition_key
 
-        call_transition_by_full_key(transition_key, *data)
+        call_transition_by_full_key(transition_key, *data, **params)
       end
 
       private
 
-      def call_transition_by_full_key(transition_key, *data)
+      def call_transition_by_full_key(transition_key, *data, **params)
         transition = transition_container.get_by_full_key(transition_key)
         if transition.arity > data.size
-          transition.call(*data.map(&:clone), self)
+          transition.call(*data.map(&:clone), self, **params)
         else
-          transition.call(*data.map(&:clone))
+          transition.call(*data.map(&:clone), **params)
         end
       end
 
